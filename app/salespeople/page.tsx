@@ -271,7 +271,7 @@ export default function SalespeopleManagement() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-emerald-700">${getTotalSales().toLocaleString()}</div>
+                  <div className="text-3xl font-bold text-emerald-700">KES {getTotalSales().toLocaleString()}</div>
                   <p className="text-sm text-emerald-600 mt-1">Combined revenue</p>
                 </CardContent>
               </Card>
@@ -298,7 +298,7 @@ export default function SalespeopleManagement() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-lg font-bold text-purple-700 truncate">{getTopPerformer().name}</div>
-                  <p className="text-sm text-purple-600 mt-1">${getTopPerformer().totalSales.toLocaleString()} sales</p>
+                  <p className="text-sm text-purple-600 mt-1">{getTopPerformer().totalSales.toLocaleString()} sales</p>
                 </CardContent>
               </Card>
             </div>

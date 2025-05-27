@@ -98,7 +98,7 @@ export default function Dashboard() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-lg md:text-2xl font-bold">${totalSales.toLocaleString()}</div>
+                            <div className="text-lg md:text-2xl font-bold">Kes {totalSales.toLocaleString()}</div>
                             <p className="text-xs text-emerald-100">+12% from last month</p>
                         </CardContent>
                     </Card>
@@ -138,7 +138,10 @@ export default function Dashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-lg md:text-2xl font-bold">
-                                ${Math.round(totalSales / activeSalespeople).toLocaleString()}
+                                Kes {Number.isFinite(totalSales / activeSalespeople)
+                                ? Math.round(totalSales / activeSalespeople).toLocaleString()
+                                : 0}
+
                             </div>
                             <p className="text-xs text-orange-100">Per salesperson</p>
                         </CardContent>
@@ -251,7 +254,7 @@ export default function Dashboard() {
                                             <div className="flex items-center gap-3">
                                                 <Badge
                                                     variant={index === 0 ? "default" : "secondary"}
-                                                    className={`text-xs ${index === 0 ? "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white" : ""}`}
+                                                    className={`text-xs Kes {index === 0 ? "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white" : ""}`}
                                                 >
                                                     #{index + 1}
                                                 </Badge>
@@ -262,7 +265,7 @@ export default function Dashboard() {
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-bold text-sm md:text-base text-emerald-600">
-                                                    ${person.totalSales.toLocaleString()}
+                                                    Kes {person.totalSales.toLocaleString()}
                                                 </p>
                                             </div>
                                         </div>
@@ -290,11 +293,11 @@ export default function Dashboard() {
                                     >
                                         <div>
                                             <p className="font-semibold text-sm md:text-base">{item.description}</p>
-                                            <p className="text-xs text-muted-foreground font-medium">${item.price}</p>
+                                            <p className="text-xs text-muted-foreground font-medium">Kes {item.price}</p>
                                         </div>
                                         <Badge
                                             variant={item.stock > 20 ? "default" : item.stock > 10 ? "secondary" : "destructive"}
-                                            className={`text-xs ${
+                                            className={`text-xs Kes {
                                                 item.stock > 20
                                                     ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white"
                                                     : item.stock > 10

@@ -350,105 +350,10 @@ export default function EndOfDay() {
                             </Select>
                         </CardContent>
                     </Card>
-                    <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-emerald-800">
-                                <Calculator className="h-5 w-5 text-emerald-600" />
-                                Expected Payment
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-emerald-700">${getTotalExpectedPayment().toFixed(2)}</div>
-                            <p className="text-sm text-emerald-600 mt-1">Based on Allocated quantities</p>
-                        </CardContent>
-                    </Card>
-                    {/* Expected Payment */}
-                    <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-emerald-800">
-                                <Calculator className="h-5 w-5 text-emerald-600" />
-                                Expected Payment
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-emerald-700">${getTotalExpectedPayment().toFixed(2)}</div>
-                            <p className="text-sm text-emerald-600 mt-1">Based on sold quantities</p>
-                        </CardContent>
-                    </Card>
 
-                    {/* Actual Payment */}
-                    <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-blue-800">
-                                <DollarSign className="h-5 w-5 text-blue-600" />
-                                Actual Payment
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-blue-700">${getTotalActualPayment().toFixed(2)}</div>
-                            <p className="text-sm text-blue-600 mt-1">Payment received</p>
-                        </CardContent>
-                    </Card>
 
                     {/* Payment Difference */}
-                    <Card
-                        className={`shadow-lg hover:shadow-xl transition-all duration-300 ${
-                            getPaymentDifference() === 0
-                                ? "bg-gradient-to-br from-slate-50 to-gray-50 border-slate-200"
-                                : getPaymentDifference() > 0
-                                    ? "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200"
-                                    : "bg-gradient-to-br from-red-50 to-rose-50 border-red-200"
-                        }`}
-                    >
-                        <CardHeader className="pb-3">
-                            <CardTitle
-                                className={`flex items-center gap-2 ${
-                                    getPaymentDifference() === 0
-                                        ? "text-slate-800"
-                                        : getPaymentDifference() > 0
-                                            ? "text-emerald-800"
-                                            : "text-red-800"
-                                }`}
-                            >
-                                {getPaymentDifference() === 0 ? (
-                                    <CheckCircle className="h-5 w-5 text-slate-600" />
-                                ) : getPaymentDifference() > 0 ? (
-                                    <TrendingUp className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                    <AlertCircle className="h-5 w-5 text-red-600" />
-                                )}
-                                Difference
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div
-                                className={`text-3xl font-bold ${
-                                    getPaymentDifference() === 0
-                                        ? "text-slate-700"
-                                        : getPaymentDifference() > 0
-                                            ? "text-emerald-700"
-                                            : "text-red-700"
-                                }`}
-                            >
-                                {getPaymentDifference() >= 0 ? "+" : ""}${getPaymentDifference().toFixed(2)}
-                            </div>
-                            <p
-                                className={`text-sm mt-1 ${
-                                    getPaymentDifference() === 0
-                                        ? "text-slate-600"
-                                        : getPaymentDifference() > 0
-                                            ? "text-emerald-600"
-                                            : "text-red-600"
-                                }`}
-                            >
-                                {getPaymentDifference() === 0
-                                    ? "Balanced"
-                                    : getPaymentDifference() > 0
-                                        ? "Overpayment"
-                                        : "Underpayment"}
-                            </p>
-                        </CardContent>
-                    </Card>
+
                 </div>
 
                 {/* Processing Table */}

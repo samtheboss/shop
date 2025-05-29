@@ -331,8 +331,12 @@ export default function EndOfDay() {
                                         <SelectItem key={salesperson.id} value={salesperson.id}>
                                             <div className="flex items-center gap-2">
                                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                {salesperson.name}
+                                                <span>{salesperson.name}</span>
+                                                <Badge variant="outline" className="ml-auto text-xs">
+                                                    {salesperson.itemsAllocated} items
+                                                </Badge>
                                             </div>
+
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

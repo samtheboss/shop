@@ -48,7 +48,7 @@ interface Allocation {
     itemName: string
     itemPrice: number
     quantity: number
-    date: string
+    allocationDate: string
     status: "ALLOCATED" | "SOLD" | "RETURNED"
 }
 
@@ -191,7 +191,7 @@ export default function AllocateItems() {
     }
 
     const getRecentAllocations = () => {
-        return allocations.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10)
+        return allocations.sort((a, b) => new Date(b.allocationDate).getTime() - new Date(a.allocationDate).getTime()).slice(0, 10)
     }
 
     if (loading) {
@@ -547,7 +547,7 @@ export default function AllocateItems() {
                                             }`}
                                         >
                                             <TableCell
-                                                className="text-slate-600">{new Date(allocation.date).toLocaleDateString()}</TableCell>
+                                                className="text-slate-600">{new Date(allocation.allocationDate).toLocaleDateString()}</TableCell>
                                             <TableCell
                                                 className="font-medium text-slate-800">{allocation.salespersonName}</TableCell>
                                             <TableCell

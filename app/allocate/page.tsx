@@ -100,6 +100,7 @@ export default function AllocateItems() {
         fetchData()
     }, [])
 
+
     const handleAllocate = async () => {
         if (selectedSalesperson && selectedItem && quantity) {
             const salesperson = salespeople.find((s) => s.id === selectedSalesperson)

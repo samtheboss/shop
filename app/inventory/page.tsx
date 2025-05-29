@@ -224,13 +224,16 @@ export default function InventoryManagement() {
 
       if (!response.ok) {
         throw new Error("Failed to delete item")
+      }else{
+        toast({
+          title: "Success",
+          description: `${name} has been removed from inventory`,
+        })
+
       }
 
       setItems(items.filter((item) => item.id !== id))
-      toast({
-        title: "Success",
-        description: `${name} has been removed from inventory`,
-      })
+
     } catch (error) {
       console.error("Error deleting item:", error)
       toast({

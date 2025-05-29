@@ -17,7 +17,7 @@ import {
     TrendingUp,
     Users,
     AlertCircle,
-    Calculator,
+    Calculator, Trash2,
 } from "lucide-react"
 import {
     Dialog,
@@ -31,6 +31,13 @@ import {
 import {Label} from "@/components/ui/label"
 import {toast} from "@/components/ui/use-toast"
 import {Progress} from "@/components/ui/progress"
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 interface Salesperson {
     id: string
@@ -93,6 +100,23 @@ export default function EndOfDay() {
 
         fetchData()
     }, [])
+    const handleDeleteAllocations = async (id: string, name: string) => {
+        try {
+            const res = await fetch(`${baseUrl}/allocations/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error();
+            toast({
+                title: "Success",
+                description: `${name} has been removed from Allocation`,
+            });
+            setAllocations(prev => prev.filter(allocations => allocations.id !== id));
+        } catch {
+            toast({
+                title: "Error",
+                description: "Failed to delete item",
+                variant: "destructive",
+            });
+        }
+    };
 
     const selectedSalespersonAllocations = allocations.filter(
         (allocation) => allocation.salespersonId === selectedSalesperson && allocation.status === "ALLOCATED",
@@ -515,107 +539,240 @@ export default function EndOfDay() {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-                                                            <DialogTrigger asChild>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    className="h-8 w-8 hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                                                                    onClick={() => openEditDialog(allocation)}
-                                                                >
-                                                                    <Edit className="h-3 w-3"/>
-                                                                </Button>
-                                                            </DialogTrigger>
-                                                            <DialogContent className="sm:max-w-[425px]">
-                                                                <DialogHeader>
-                                                                    <DialogTitle>Edit Allocation</DialogTitle>
-                                                                    <DialogDescription>
-                                                                        Update the allocated quantity
-                                                                        for {editingAllocation?.itemName}
-                                                                    </DialogDescription>
-                                                                </DialogHeader>
-                                                                <div className="grid gap-4 py-4">
-                                                                    <div
-                                                                        className="grid grid-cols-4 items-center gap-4">
-                                                                        <Label htmlFor="item-name"
-                                                                               className="text-right">
-                                                                            Item
-                                                                        </Label>
-                                                                        <Input
-                                                                            id="item-name"
-                                                                            value={editingAllocation?.itemName || ""}
-                                                                            className="col-span-3"
-                                                                            disabled
-                                                                        />
-                                                                    </div>
-                                                                    <div
-                                                                        className="grid grid-cols-4 items-center gap-4">
-                                                                        <Label htmlFor="unit-price"
-                                                                               className="text-right">
-                                                                            Unit Price
-                                                                        </Label>
-                                                                        <Input
-                                                                            id="unit-price"
-                                                                            value={`$${editingAllocation?.itemPrice || 0}`}
-                                                                            className="col-span-3"
-                                                                            disabled
-                                                                        />
-                                                                    </div>
-                                                                    <div
-                                                                        className="grid grid-cols-4 items-center gap-4">
-                                                                        <Label htmlFor="current-qty"
-                                                                               className="text-right">
-                                                                            Current Qty
-                                                                        </Label>
-                                                                        <Input
-                                                                            id="current-qty"
-                                                                            value={editingAllocation?.quantity || 0}
-                                                                            className="col-span-3"
-                                                                            disabled
-                                                                        />
-                                                                    </div>
-                                                                    <div
-                                                                        className="grid grid-cols-4 items-center gap-4">
-                                                                        <Label htmlFor="new-qty" className="text-right">
-                                                                            New Qty
-                                                                        </Label>
-                                                                        <Input
-                                                                            id="new-qty"
-                                                                            type="number"
-                                                                            min="0"
-                                                                            value={editFormData.quantity}
-                                                                            onChange={(e) =>
-                                                                                setEditFormData({quantity: Number.parseInt(e.target.value) || 0})
-                                                                            }
-                                                                            className="col-span-3"
-                                                                        />
-                                                                    </div>
-                                                                    {editingAllocation &&
-                                                                        processingAllocations[editingAllocation.id]?.soldQuantity > 0 && (
-                                                                            <div
-                                                                                className="grid grid-cols-4 items-center gap-4">
-                                                                                <Label
-                                                                                    className="text-right text-sm text-muted-foreground">Note</Label>
-                                                                                <p className="col-span-3 text-sm text-muted-foreground">
-                                                                                    {processingAllocations[editingAllocation.id].soldQuantity} items
-                                                                                    already sold.
-                                                                                    {editFormData.quantity <
-                                                                                        processingAllocations[editingAllocation.id].soldQuantity &&
-                                                                                        " Sold quantity will be adjusted to match new allocation."}
-                                                                                </p>
-                                                                            </div>
-                                                                        )}
-                                                                </div>
-                                                                <DialogFooter>
-                                                                    <Button variant="outline" onClick={closeEditDialog}>
-                                                                        Cancel
+                                                        <div className="flex gap-2">
+                                                            {/* Edit Dialog */}
+                                                            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+                                                                <DialogTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        className="h-8 w-8 hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                                                                        onClick={() => openEditDialog(allocation)}
+                                                                    >
+                                                                        <Edit className="h-3 w-3" />
                                                                     </Button>
-                                                                    <Button onClick={saveAllocationEdit}>Save
-                                                                        Changes</Button>
-                                                                </DialogFooter>
-                                                            </DialogContent>
-                                                        </Dialog>
+                                                                </DialogTrigger>
+                                                                <DialogContent className="sm:max-w-[425px]">
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Edit Allocation</DialogTitle>
+                                                                        <DialogDescription>
+                                                                            Update the allocated quantity for {editingAllocation?.itemName}
+                                                                        </DialogDescription>
+                                                                    </DialogHeader>
+                                                                    <div className="grid gap-4 py-4">
+                                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                                            <Label htmlFor="item-name" className="text-right">
+                                                                                Item
+                                                                            </Label>
+                                                                            <Input
+                                                                                id="item-name"
+                                                                                value={editingAllocation?.itemName || ""}
+                                                                                className="col-span-3"
+                                                                                disabled
+                                                                            />
+                                                                        </div>
+                                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                                            <Label htmlFor="unit-price" className="text-right">
+                                                                                Unit Price
+                                                                            </Label>
+                                                                            <Input
+                                                                                id="unit-price"
+                                                                                value={`$${editingAllocation?.itemPrice || 0}`}
+                                                                                className="col-span-3"
+                                                                                disabled
+                                                                            />
+                                                                        </div>
+                                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                                            <Label htmlFor="current-qty" className="text-right">
+                                                                                Current Qty
+                                                                            </Label>
+                                                                            <Input
+                                                                                id="current-qty"
+                                                                                value={editingAllocation?.quantity || 0}
+                                                                                className="col-span-3"
+                                                                                disabled
+                                                                            />
+                                                                        </div>
+                                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                                            <Label htmlFor="new-qty" className="text-right">
+                                                                                New Qty
+                                                                            </Label>
+                                                                            <Input
+                                                                                id="new-qty"
+                                                                                type="number"
+                                                                                min="0"
+                                                                                value={editFormData.quantity}
+                                                                                onChange={(e) =>
+                                                                                    setEditFormData({
+                                                                                        quantity: Number.parseInt(e.target.value) || 0,
+                                                                                    })
+                                                                                }
+                                                                                className="col-span-3"
+                                                                            />
+                                                                        </div>
+                                                                        {editingAllocation &&
+                                                                            processingAllocations[editingAllocation.id]?.soldQuantity > 0 && (
+                                                                                <div className="grid grid-cols-4 items-center gap-4">
+                                                                                    <Label className="text-right text-sm text-muted-foreground">
+                                                                                        Note
+                                                                                    </Label>
+                                                                                    <p className="col-span-3 text-sm text-muted-foreground">
+                                                                                        {
+                                                                                            processingAllocations[editingAllocation.id]
+                                                                                                .soldQuantity
+                                                                                        }{" "}
+                                                                                        items already sold.
+                                                                                        {editFormData.quantity <
+                                                                                            processingAllocations[editingAllocation.id]
+                                                                                                .soldQuantity &&
+                                                                                            " Sold quantity will be adjusted to match new allocation."}
+                                                                                    </p>
+                                                                                </div>
+                                                                            )}
+                                                                    </div>
+                                                                    <DialogFooter>
+                                                                        <Button variant="outline" onClick={closeEditDialog}>
+                                                                            Cancel
+                                                                        </Button>
+                                                                        <Button onClick={saveAllocationEdit}>Save Changes</Button>
+                                                                    </DialogFooter>
+                                                                </DialogContent>
+                                                            </Dialog>
+
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="icon"
+                                                                        className="h-8 w-8 hover:bg-red-50 hover:border-red-300 transition-colors"
+                                                                    >
+                                                                        <Trash2 className="h-3 w-3" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            Are you sure you want to delete "{allocation.itemName}"? This action cannot be undone and will
+                                                                            remove all associated data.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            onClick={() => handleDeleteAllocations(allocation.id, allocation.itemName)}
+                                                                            className="bg-red-600 hover:bg-red-700"
+                                                                        >
+                                                                            Delete Product
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </div>
                                                     </TableCell>
+
+                                                    {/*<TableCell>*/}
+                                                    {/*    <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>*/}
+                                                    {/*        <DialogTrigger asChild>*/}
+                                                    {/*            <Button*/}
+                                                    {/*                variant="outline"*/}
+                                                    {/*                size="icon"*/}
+                                                    {/*                className="h-8 w-8 hover:bg-blue-50 hover:border-blue-300 transition-colors"*/}
+                                                    {/*                onClick={() => openEditDialog(allocation)}*/}
+                                                    {/*            >*/}
+                                                    {/*                <Edit className="h-3 w-3"/>*/}
+                                                    {/*            </Button>*/}
+                                                    {/*        </DialogTrigger>*/}
+                                                    {/*        <DialogContent className="sm:max-w-[425px]">*/}
+                                                    {/*            <DialogHeader>*/}
+                                                    {/*                <DialogTitle>Edit Allocation</DialogTitle>*/}
+                                                    {/*                <DialogDescription>*/}
+                                                    {/*                    Update the allocated quantity*/}
+                                                    {/*                    for {editingAllocation?.itemName}*/}
+                                                    {/*                </DialogDescription>*/}
+                                                    {/*            </DialogHeader>*/}
+                                                    {/*            <div className="grid gap-4 py-4">*/}
+                                                    {/*                <div*/}
+                                                    {/*                    className="grid grid-cols-4 items-center gap-4">*/}
+                                                    {/*                    <Label htmlFor="item-name"*/}
+                                                    {/*                           className="text-right">*/}
+                                                    {/*                        Item*/}
+                                                    {/*                    </Label>*/}
+                                                    {/*                    <Input*/}
+                                                    {/*                        id="item-name"*/}
+                                                    {/*                        value={editingAllocation?.itemName || ""}*/}
+                                                    {/*                        className="col-span-3"*/}
+                                                    {/*                        disabled*/}
+                                                    {/*                    />*/}
+                                                    {/*                </div>*/}
+                                                    {/*                <div*/}
+                                                    {/*                    className="grid grid-cols-4 items-center gap-4">*/}
+                                                    {/*                    <Label htmlFor="unit-price"*/}
+                                                    {/*                           className="text-right">*/}
+                                                    {/*                        Unit Price*/}
+                                                    {/*                    </Label>*/}
+                                                    {/*                    <Input*/}
+                                                    {/*                        id="unit-price"*/}
+                                                    {/*                        value={`$${editingAllocation?.itemPrice || 0}`}*/}
+                                                    {/*                        className="col-span-3"*/}
+                                                    {/*                        disabled*/}
+                                                    {/*                    />*/}
+                                                    {/*                </div>*/}
+                                                    {/*                <div*/}
+                                                    {/*                    className="grid grid-cols-4 items-center gap-4">*/}
+                                                    {/*                    <Label htmlFor="current-qty"*/}
+                                                    {/*                           className="text-right">*/}
+                                                    {/*                        Current Qty*/}
+                                                    {/*                    </Label>*/}
+                                                    {/*                    <Input*/}
+                                                    {/*                        id="current-qty"*/}
+                                                    {/*                        value={editingAllocation?.quantity || 0}*/}
+                                                    {/*                        className="col-span-3"*/}
+                                                    {/*                        disabled*/}
+                                                    {/*                    />*/}
+                                                    {/*                </div>*/}
+                                                    {/*                <div*/}
+                                                    {/*                    className="grid grid-cols-4 items-center gap-4">*/}
+                                                    {/*                    <Label htmlFor="new-qty" className="text-right">*/}
+                                                    {/*                        New Qty*/}
+                                                    {/*                    </Label>*/}
+                                                    {/*                    <Input*/}
+                                                    {/*                        id="new-qty"*/}
+                                                    {/*                        type="number"*/}
+                                                    {/*                        min="0"*/}
+                                                    {/*                        value={editFormData.quantity}*/}
+                                                    {/*                        onChange={(e) =>*/}
+                                                    {/*                            setEditFormData({quantity: Number.parseInt(e.target.value) || 0})*/}
+                                                    {/*                        }*/}
+                                                    {/*                        className="col-span-3"*/}
+                                                    {/*                    />*/}
+                                                    {/*                </div>*/}
+                                                    {/*                {editingAllocation &&*/}
+                                                    {/*                    processingAllocations[editingAllocation.id]?.soldQuantity > 0 && (*/}
+                                                    {/*                        <div*/}
+                                                    {/*                            className="grid grid-cols-4 items-center gap-4">*/}
+                                                    {/*                            <Label*/}
+                                                    {/*                                className="text-right text-sm text-muted-foreground">Note</Label>*/}
+                                                    {/*                            <p className="col-span-3 text-sm text-muted-foreground">*/}
+                                                    {/*                                {processingAllocations[editingAllocation.id].soldQuantity} items*/}
+                                                    {/*                                already sold.*/}
+                                                    {/*                                {editFormData.quantity <*/}
+                                                    {/*                                    processingAllocations[editingAllocation.id].soldQuantity &&*/}
+                                                    {/*                                    " Sold quantity will be adjusted to match new allocation."}*/}
+                                                    {/*                            </p>*/}
+                                                    {/*                        </div>*/}
+                                                    {/*                    )}*/}
+                                                    {/*            </div>*/}
+                                                    {/*            <DialogFooter>*/}
+                                                    {/*                <Button variant="outline" onClick={closeEditDialog}>*/}
+                                                    {/*                    Cancel*/}
+                                                    {/*                </Button>*/}
+                                                    {/*                <Button onClick={saveAllocationEdit}>Save*/}
+                                                    {/*                    Changes</Button>*/}
+                                                    {/*            </DialogFooter>*/}
+                                                    {/*        </DialogContent>*/}
+                                                    {/*    </Dialog>*/}
+                                                    {/*</TableCell>*/}
                                                 </TableRow>
                                             )
                                         })}

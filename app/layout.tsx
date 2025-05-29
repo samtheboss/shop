@@ -7,10 +7,10 @@ import MobileNav from "./components/mobile-nav"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Sales Management System",
+  title: "Janix Sales Management System",
   description: "Manage your sales team, inventory, and track performance",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
-    generator: 'v0.dev'
+    generator: 'SmartApps Developers'
 }
 
 export default function RootLayout({

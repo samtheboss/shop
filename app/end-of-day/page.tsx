@@ -8,18 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-    ArrowLeft,
-    DollarSign,
-    Package,
-    CheckCircle,
-    Edit,
-    TrendingUp,
-    Users,
-    AlertCircle,
-    Calculator,
-    Trash2,
-} from "lucide-react"
+import { ArrowLeft, Package, CheckCircle, Edit, Users, Trash2 } from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -350,10 +339,6 @@ export default function EndOfDay() {
                             </Select>
                         </CardContent>
                     </Card>
-
-
-                    {/* Payment Difference */}
-
                 </div>
 
                 {/* Processing Table */}
@@ -788,19 +773,21 @@ export default function EndOfDay() {
                             </div>
                             {/* Summary Footer */}
                             <div className="p-6 bg-gradient-to-r from-slate-50 to-blue-50 border-t border-slate-100">
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                                    <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                                        <p className="text-sm text-slate-600 mb-1">Expected Payment</p>
-                                        <p className="text-2xl font-bold text-emerald-600">${getTotalExpectedPayment().toFixed(2)}</p>
+                                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+                                    <div className="text-center p-2 sm:p-4 bg-white rounded-lg shadow-sm">
+                                        <p className="text-xs sm:text-sm text-slate-600 mb-1">Expected Payment</p>
+                                        <p className="text-lg sm:text-2xl font-bold text-emerald-600">
+                                            ${getTotalExpectedPayment().toFixed(2)}
+                                        </p>
                                     </div>
-                                    <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                                        <p className="text-sm text-slate-600 mb-1">Actual Payment</p>
-                                        <p className="text-2xl font-bold text-blue-600">${getTotalActualPayment().toFixed(2)}</p>
+                                    <div className="text-center p-2 sm:p-4 bg-white rounded-lg shadow-sm">
+                                        <p className="text-xs sm:text-sm text-slate-600 mb-1">Actual Payment</p>
+                                        <p className="text-lg sm:text-2xl font-bold text-blue-600">${getTotalActualPayment().toFixed(2)}</p>
                                     </div>
-                                    <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                                        <p className="text-sm text-slate-600 mb-1">Difference</p>
+                                    <div className="text-center p-2 sm:p-4 bg-white rounded-lg shadow-sm">
+                                        <p className="text-xs sm:text-sm text-slate-600 mb-1">Difference</p>
                                         <p
-                                            className={`text-2xl font-bold ${
+                                            className={`text-lg sm:text-2xl font-bold ${
                                                 getPaymentDifference() === 0
                                                     ? "text-slate-600"
                                                     : getPaymentDifference() > 0

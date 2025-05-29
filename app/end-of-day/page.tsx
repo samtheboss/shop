@@ -1,14 +1,25 @@
 "use client"
 
-import {useState, useEffect} from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Badge} from "@/components/ui/badge"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import { ArrowLeft, DollarSign, Package, CheckCircle, Edit, TrendingUp, Users, AlertCircle, Calculator, Trash2 } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    ArrowLeft,
+    DollarSign,
+    Package,
+    CheckCircle,
+    Edit,
+    TrendingUp,
+    Users,
+    AlertCircle,
+    Calculator,
+    Trash2,
+} from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -18,16 +29,20 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import {Label} from "@/components/ui/label"
-import {toast} from "@/components/ui/use-toast"
-import {Progress} from "@/components/ui/progress"
+import { Label } from "@/components/ui/label"
+import { toast } from "@/components/ui/use-toast"
+import { Progress } from "@/components/ui/progress"
 import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger
-} from "@/components/ui/alert-dialog";
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface Salesperson {
     id: string
@@ -60,7 +75,7 @@ export default function EndOfDay() {
     }>({})
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [editingAllocation, setEditingAllocation] = useState<Allocation | null>(null)
-    const [editFormData, setEditFormData] = useState({quantity: 0})
+    const [editFormData, setEditFormData] = useState({ quantity: 0 })
 
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
@@ -92,21 +107,21 @@ export default function EndOfDay() {
     }, [])
     const handleDeleteAllocations = async (id: string, name: string) => {
         try {
-            const res = await fetch(`${baseUrl}/allocations/${id}`, { method: "DELETE" });
-            if (!res.ok) throw new Error();
+            const res = await fetch(`${baseUrl}/allocations/${id}`, { method: "DELETE" })
+            if (!res.ok) throw new Error()
             toast({
                 title: "Success",
                 description: `${name} has been removed from Allocation`,
-            });
-            setAllocations(prev => prev.filter(allocations => allocations.id !== id));
+            })
+            setAllocations((prev) => prev.filter((allocations) => allocations.id !== id))
         } catch {
             toast({
                 title: "Error",
                 description: "Failed to delete item",
                 variant: "destructive",
-            });
+            })
         }
-    };
+    }
 
     const selectedSalespersonAllocations = allocations.filter(
         (allocation) => allocation.salespersonId === selectedSalesperson && allocation.status === "ALLOCATED",
@@ -159,7 +174,7 @@ export default function EndOfDay() {
             setAllocations((prev) =>
                 prev.map((a) => {
                     const updated = updatedAllocations.find((ua: Allocation) => ua.id === a.id)
-                    return updated ? {...a, ...updated} : a
+                    return updated ? { ...a, ...updated } : a
                 }),
             )
 
@@ -206,14 +221,14 @@ export default function EndOfDay() {
 
     const openEditDialog = (allocation: Allocation) => {
         setEditingAllocation(allocation)
-        setEditFormData({quantity: allocation.quantity})
+        setEditFormData({ quantity: allocation.quantity })
         setEditDialogOpen(true)
     }
 
     const closeEditDialog = () => {
         setEditDialogOpen(false)
         setEditingAllocation(null)
-        setEditFormData({quantity: 0})
+        setEditFormData({ quantity: 0 })
     }
 
     const saveAllocationEdit = async () => {
@@ -224,7 +239,7 @@ export default function EndOfDay() {
         try {
             const res = await fetch(`${baseUrl}/allocations/${editingAllocation.id}`, {
                 method: "PUT",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     quantity: updatedQuantity,
                     soldQuantity: processingAllocations[editingAllocation.id]?.soldQuantity || 0,
@@ -236,7 +251,7 @@ export default function EndOfDay() {
             if (!res.ok) throw new Error("Failed to update allocation")
 
             setAllocations((prev) =>
-                prev.map((a) => (a.id === editingAllocation.id ? {...a, quantity: updatedQuantity} : a)),
+                prev.map((a) => (a.id === editingAllocation.id ? { ...a, quantity: updatedQuantity } : a)),
             )
 
             const currentProcessing = processingAllocations[editingAllocation.id]
@@ -276,9 +291,8 @@ export default function EndOfDay() {
                 <div className="mb-8">
                     <div className="flex items-center gap-4 mb-6">
                         <Link href="/">
-                            <Button variant="outline" size="icon"
-                                    className="shadow-sm hover:shadow-md transition-shadow">
-                                <ArrowLeft className="h-4 w-4"/>
+                            <Button variant="outline" size="icon" className="shadow-sm hover:shadow-md transition-shadow">
+                                <ArrowLeft className="h-4 w-4" />
                             </Button>
                         </Link>
                         <div className="flex-1">
@@ -288,9 +302,8 @@ export default function EndOfDay() {
                             <p className="text-slate-600 mt-2 text-lg">Process sales and returns for allocated items</p>
                         </div>
                         {selectedSalesperson && (
-                            <div
-                                className="hidden sm:flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 border shadow-sm">
-                                <Users className="h-4 w-4 text-blue-600"/>
+                            <div className="hidden sm:flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 border shadow-sm">
+                                <Users className="h-4 w-4 text-blue-600" />
                                 <span className="font-medium text-slate-700">{selectedSalespersonData?.name}</span>
                             </div>
                         )}
@@ -303,7 +316,7 @@ export default function EndOfDay() {
                                 <span className="text-sm font-medium text-slate-700">Processing Progress</span>
                                 <span className="text-sm text-slate-500">{Math.round(getCompletionPercentage())}% Complete</span>
                             </div>
-                            <Progress value={getCompletionPercentage()} className="h-2"/>
+                            <Progress value={getCompletionPercentage()} className="h-2" />
                         </div>
                     )}
                 </div>
@@ -311,20 +324,18 @@ export default function EndOfDay() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
                     {/* Salesperson Selection */}
-                    <Card
-                        className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-slate-800">
-                                <Users className="h-5 w-5 text-blue-600"/>
+                                <Users className="h-5 w-5 text-blue-600" />
                                 Select Salesperson
                             </CardTitle>
                             <CardDescription>Choose a salesperson to process</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Select value={selectedSalesperson} onValueChange={setSelectedSalesperson}>
-                                <SelectTrigger
-                                    className="w-full border-slate-200 focus:border-blue-500 focus:ring-blue-500">
-                                    <SelectValue placeholder="Select a salesperson"/>
+                                <SelectTrigger className="w-full border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+                                    <SelectValue placeholder="Select a salesperson" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {salespeople.map((salesperson) => (
@@ -339,48 +350,42 @@ export default function EndOfDay() {
                             </Select>
                         </CardContent>
                     </Card>
-                    <Card
-                        className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-emerald-800">
-                                <Calculator className="h-5 w-5 text-emerald-600"/>
+                                <Calculator className="h-5 w-5 text-emerald-600" />
                                 Expected Payment
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div
-                                className="text-3xl font-bold text-emerald-700">${getTotalExpectedPayment().toFixed(2)}</div>
+                            <div className="text-3xl font-bold text-emerald-700">${getTotalExpectedPayment().toFixed(2)}</div>
                             <p className="text-sm text-emerald-600 mt-1">Based on Allocated quantities</p>
                         </CardContent>
                     </Card>
                     {/* Expected Payment */}
-                    <Card
-                        className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-emerald-800">
-                                <Calculator className="h-5 w-5 text-emerald-600"/>
+                                <Calculator className="h-5 w-5 text-emerald-600" />
                                 Expected Payment
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div
-                                className="text-3xl font-bold text-emerald-700">${getTotalExpectedPayment().toFixed(2)}</div>
+                            <div className="text-3xl font-bold text-emerald-700">${getTotalExpectedPayment().toFixed(2)}</div>
                             <p className="text-sm text-emerald-600 mt-1">Based on sold quantities</p>
                         </CardContent>
                     </Card>
 
                     {/* Actual Payment */}
-                    <Card
-                        className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-blue-800">
-                                <DollarSign className="h-5 w-5 text-blue-600"/>
+                                <DollarSign className="h-5 w-5 text-blue-600" />
                                 Actual Payment
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div
-                                className="text-3xl font-bold text-blue-700">${getTotalActualPayment().toFixed(2)}</div>
+                            <div className="text-3xl font-bold text-blue-700">${getTotalActualPayment().toFixed(2)}</div>
                             <p className="text-sm text-blue-600 mt-1">Payment received</p>
                         </CardContent>
                     </Card>
@@ -406,11 +411,11 @@ export default function EndOfDay() {
                                 }`}
                             >
                                 {getPaymentDifference() === 0 ? (
-                                    <CheckCircle className="h-5 w-5 text-slate-600"/>
+                                    <CheckCircle className="h-5 w-5 text-slate-600" />
                                 ) : getPaymentDifference() > 0 ? (
-                                    <TrendingUp className="h-5 w-5 text-emerald-600"/>
+                                    <TrendingUp className="h-5 w-5 text-emerald-600" />
                                 ) : (
-                                    <AlertCircle className="h-5 w-5 text-red-600"/>
+                                    <AlertCircle className="h-5 w-5 text-red-600" />
                                 )}
                                 Difference
                             </CardTitle>
@@ -459,7 +464,7 @@ export default function EndOfDay() {
                         <CardContent className="p-0">
                             <div className="block">
                                 {/* Mobile Card Layout */}
-                                <div className="block md:hidden space-y-4">
+                                <div className="block md:hidden space-y-3">
                                     {selectedSalespersonAllocations.map((allocation, index) => {
                                         const processing = processingAllocations[allocation.id] || {
                                             soldQuantity: 0,
@@ -469,22 +474,27 @@ export default function EndOfDay() {
                                         const returnedQuantity = allocation.quantity - (processing.soldQuantity ?? 0)
 
                                         return (
-                                            <div
-                                                key={allocation.id}
-                                                className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm"
-                                            >
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <div>
-                                                        <h3 className="font-medium text-slate-800 text-lg">{allocation.itemName}</h3>
-                                                        <p className="text-sm text-slate-600">Unit Price: <span className="font-semibold text-emerald-600">${allocation.itemPrice}</span></p>
+                                            <div key={allocation.id} className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-medium text-slate-800 text-base truncate">{allocation.itemName}</h3>
+                                                        <div className="flex items-center gap-3 text-sm text-slate-600 mt-1">
+                                                            <span>${allocation.itemPrice}</span>
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="bg-blue-50 text-blue-700 border-blue-200 text-xs px-2 py-0"
+                                                            >
+                                                                {allocation.quantity} allocated
+                                                            </Badge>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex gap-2">
+                                                    <div className="flex gap-1 ml-2">
                                                         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
                                                             <DialogTrigger asChild>
                                                                 <Button
                                                                     variant="outline"
                                                                     size="icon"
-                                                                    className="h-8 w-8 hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                                                                    className="h-7 w-7 hover:bg-blue-50 hover:border-blue-300 transition-colors"
                                                                     onClick={() => openEditDialog(allocation)}
                                                                 >
                                                                     <Edit className="h-3 w-3" />
@@ -551,18 +561,11 @@ export default function EndOfDay() {
                                                                     {editingAllocation &&
                                                                         processingAllocations[editingAllocation.id]?.soldQuantity > 0 && (
                                                                             <div className="grid grid-cols-4 items-center gap-4">
-                                                                                <Label className="text-right text-sm text-muted-foreground">
-                                                                                    Note
-                                                                                </Label>
+                                                                                <Label className="text-right text-sm text-muted-foreground">Note</Label>
                                                                                 <p className="col-span-3 text-sm text-muted-foreground">
-                                                                                    {
-                                                                                        processingAllocations[editingAllocation.id]
-                                                                                            .soldQuantity
-                                                                                    }{" "}
-                                                                                    items already sold.
+                                                                                    {processingAllocations[editingAllocation.id].soldQuantity} items already sold.
                                                                                     {editFormData.quantity <
-                                                                                        processingAllocations[editingAllocation.id]
-                                                                                            .soldQuantity &&
+                                                                                        processingAllocations[editingAllocation.id].soldQuantity &&
                                                                                         " Sold quantity will be adjusted to match new allocation."}
                                                                                 </p>
                                                                             </div>
@@ -582,7 +585,7 @@ export default function EndOfDay() {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="icon"
-                                                                    className="h-8 w-8 hover:bg-red-50 hover:border-red-300 transition-colors"
+                                                                    className="h-7 w-7 hover:bg-red-50 hover:border-red-300 transition-colors"
                                                                 >
                                                                     <Trash2 className="h-3 w-3" />
                                                                 </Button>
@@ -591,8 +594,8 @@ export default function EndOfDay() {
                                                                 <AlertDialogHeader>
                                                                     <AlertDialogTitle>Delete Product</AlertDialogTitle>
                                                                     <AlertDialogDescription>
-                                                                        Are you sure you want to delete "{allocation.itemName}"? This action cannot be undone and will
-                                                                        remove all associated data.
+                                                                        Are you sure you want to delete "{allocation.itemName}"? This action cannot be
+                                                                        undone and will remove all associated data.
                                                                     </AlertDialogDescription>
                                                                 </AlertDialogHeader>
                                                                 <AlertDialogFooter>
@@ -609,33 +612,26 @@ export default function EndOfDay() {
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-2 gap-3 mb-4">
-                                                    <div>
-                                                        <Label className="text-sm text-slate-600">Allocated Qty</Label>
-                                                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 block w-fit mt-1">
-                                                            {allocation.quantity}
-                                                        </Badge>
+                                                {/* Status badges */}
+                                                {(processing.soldQuantity > 0 || returnedQuantity > 0) && (
+                                                    <div className="flex gap-2 mb-2">
+                                                        {processing.soldQuantity > 0 && (
+                                                            <Badge className="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-2 py-0">
+                                                                {processing.soldQuantity} sold
+                                                            </Badge>
+                                                        )}
+                                                        {returnedQuantity > 0 && (
+                                                            <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-700 px-2 py-0">
+                                                                {returnedQuantity} returned
+                                                            </Badge>
+                                                        )}
                                                     </div>
-                                                    <div>
-                                                        <Label className="text-sm text-slate-600">Status</Label>
-                                                        <div className="flex flex-col gap-1 mt-1">
-                                                            {processing.soldQuantity > 0 && (
-                                                                <Badge className="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 w-fit">
-                                                                    {processing.soldQuantity} sold
-                                                                </Badge>
-                                                            )}
-                                                            {returnedQuantity > 0 && (
-                                                                <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-700 w-fit">
-                                                                    {returnedQuantity} returned
-                                                                </Badge>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                )}
 
-                                                <div className="grid grid-cols-1 gap-3">
+                                                {/* Input fields in compact grid */}
+                                                <div className="grid grid-cols-3 gap-2 text-sm">
                                                     <div>
-                                                        <Label className="text-sm text-slate-600">Sold Quantity</Label>
+                                                        <Label className="text-xs text-slate-600 mb-1 block">Sold Qty</Label>
                                                         <Input
                                                             type="number"
                                                             min="0"
@@ -644,27 +640,29 @@ export default function EndOfDay() {
                                                             onChange={(e) =>
                                                                 handleQuantityChange(allocation.id, Number.parseInt(e.target.value) || 0)
                                                             }
-                                                            className="mt-1 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                                                            className="h-8 text-sm border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                                                         />
                                                     </div>
-                                                    <div className="grid grid-cols-2 gap-3">
-                                                        <div>
-                                                            <Label className="text-sm text-slate-600">Expected Payment</Label>
-                                                            <p className="font-semibold text-emerald-600 mt-1">${expectedPayment.toFixed(2)}</p>
+                                                    <div>
+                                                        <Label className="text-xs text-slate-600 mb-1 block">Expected</Label>
+                                                        <div className="h-8 flex items-center">
+                              <span className="font-semibold text-emerald-600 text-sm">
+                                ${expectedPayment.toFixed(2)}
+                              </span>
                                                         </div>
-                                                        <div>
-                                                            <Label className="text-sm text-slate-600">Actual Payment</Label>
-                                                            <Input
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                value={processing.paymentReceived ?? 0}
-                                                                onChange={(e) =>
-                                                                    handlePaymentChange(allocation.id, Number.parseFloat(e.target.value) || 0)
-                                                                }
-                                                                className="mt-1 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-                                                            />
-                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs text-slate-600 mb-1 block">Actual</Label>
+                                                        <Input
+                                                            type="number"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value={processing.paymentReceived ?? 0}
+                                                            onChange={(e) =>
+                                                                handlePaymentChange(allocation.id, Number.parseFloat(e.target.value) || 0)
+                                                            }
+                                                            className="h-8 text-sm border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -825,18 +823,12 @@ export default function EndOfDay() {
                                                                             {editingAllocation &&
                                                                                 processingAllocations[editingAllocation.id]?.soldQuantity > 0 && (
                                                                                     <div className="grid grid-cols-4 items-center gap-4">
-                                                                                        <Label className="text-right text-sm text-muted-foreground">
-                                                                                            Note
-                                                                                        </Label>
+                                                                                        <Label className="text-right text-sm text-muted-foreground">Note</Label>
                                                                                         <p className="col-span-3 text-sm text-muted-foreground">
-                                                                                            {
-                                                                                                processingAllocations[editingAllocation.id]
-                                                                                                    .soldQuantity
-                                                                                            }{" "}
-                                                                                            items already sold.
+                                                                                            {processingAllocations[editingAllocation.id].soldQuantity} items already
+                                                                                            sold.
                                                                                             {editFormData.quantity <
-                                                                                                processingAllocations[editingAllocation.id]
-                                                                                                    .soldQuantity &&
+                                                                                                processingAllocations[editingAllocation.id].soldQuantity &&
                                                                                                 " Sold quantity will be adjusted to match new allocation."}
                                                                                         </p>
                                                                                     </div>
@@ -865,8 +857,8 @@ export default function EndOfDay() {
                                                                         <AlertDialogHeader>
                                                                             <AlertDialogTitle>Delete Product</AlertDialogTitle>
                                                                             <AlertDialogDescription>
-                                                                                Are you sure you want to delete "{allocation.itemName}"? This action cannot be undone and will
-                                                                                remove all associated data.
+                                                                                Are you sure you want to delete "{allocation.itemName}"? This action cannot be
+                                                                                undone and will remove all associated data.
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
@@ -921,7 +913,7 @@ export default function EndOfDay() {
                                     className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                                     size="lg"
                                 >
-                                    <CheckCircle className="mr-2 h-5 w-5"/>
+                                    <CheckCircle className="mr-2 h-5 w-5" />
                                     Complete End of Day Processing
                                 </Button>
                             </div>
@@ -933,9 +925,8 @@ export default function EndOfDay() {
                 {selectedSalesperson && selectedSalespersonAllocations.length === 0 && (
                     <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
                         <CardContent className="text-center py-12">
-                            <div
-                                className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Package className="h-10 w-10 text-slate-400"/>
+                            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Package className="h-10 w-10 text-slate-400" />
                             </div>
                             <h3 className="text-lg font-semibold text-slate-800 mb-2">No Allocations Found</h3>
                             <p className="text-slate-600">This salesperson has no allocated items to process today.</p>

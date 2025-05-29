@@ -9,8 +9,11 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Janix Sales Management System",
   description: "Manage your sales team, inventory, and track performance",
+  icons: {
+    icon: '/favicon.ico',
+  },
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
-    generator: 'SmartApps Developers'
+    generator: 'SmartApps Developers',
 }
 
 export default function RootLayout({

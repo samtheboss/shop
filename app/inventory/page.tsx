@@ -29,7 +29,18 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Plus, Edit, Trash2, Package, DollarSign, AlertTriangle, Search, BarChart3 } from "lucide-react"
+import {
+  ArrowLeft,
+  Plus,
+  Edit,
+  Trash2,
+  Package,
+  DollarSign,
+  AlertTriangle,
+  Search,
+  BarChart3,
+  RefreshCwIcon
+} from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import { Progress } from "@/components/ui/progress"
 
@@ -67,7 +78,8 @@ export default function InventoryManagement() {
     sku: "",
   })
 
-  useEffect(() => {
+  const fetchItems = () => {
+    setLoading(true)
     fetch(baseUrl + `/items`)
         .then((res) => res.json())
         .then((data) => {
@@ -84,6 +96,10 @@ export default function InventoryManagement() {
             variant: "destructive",
           })
         })
+  }
+
+  useEffect(() => {
+    fetchItems()
   }, [])
 
   useEffect(() => {
@@ -382,6 +398,10 @@ export default function InventoryManagement() {
                       <SelectItem value="out">Out of Stock</SelectItem>
                     </SelectContent>
                   </Select>
+                  <Button onClick={fetchItems} className ="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                    <RefreshCwIcon className="h-2 w-4" />
+                    Refresh
+                  </Button>
                 </div>
               </div>
 

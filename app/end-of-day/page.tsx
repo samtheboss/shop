@@ -60,7 +60,7 @@ export default function EndOfDay() {
     const [allocations, setAllocations] = useState<Allocation[]>([])
     const [selectedSalesperson, setSelectedSalesperson] = useState("")
     const [processingAllocations, setProcessingAllocations] = useState<{
-        [key: string]: { soldQuantity: number; paymentReceived: number }
+        [key: string]: { soldQuantity: number; paymentReceived: number; expectedPayment: number }
     }>({})
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [editingAllocation, setEditingAllocation] = useState<Allocation | null>(null)
@@ -117,11 +117,15 @@ export default function EndOfDay() {
     )
 
     const handleQuantityChange = (allocationId: string, soldQuantity: number) => {
+        const allocation = selectedSalespersonAllocations.find((a) => a.id === allocationId)
+        const expectedPayment = allocation ? (soldQuantity || 0) * allocation.itemPrice : 0
+
         setProcessingAllocations((prev) => ({
             ...prev,
             [allocationId]: {
                 soldQuantity: soldQuantity || 0,
                 paymentReceived: prev[allocationId]?.paymentReceived || 0,
+                expectedPayment: expectedPayment,
             },
         }))
     }
@@ -132,6 +136,7 @@ export default function EndOfDay() {
             [allocationId]: {
                 soldQuantity: prev[allocationId]?.soldQuantity || 0,
                 paymentReceived: paymentReceived || 0,
+                expectedPayment: prev[allocationId]?.expectedPayment || 0,
             },
         }))
     }
@@ -182,13 +187,8 @@ export default function EndOfDay() {
     }
 
     const getTotalExpectedPayment = () => {
-        return Object.entries(processingAllocations).reduce((total, [allocationId, processing]) => {
-            const allocation = selectedSalespersonAllocations.find((a) => a.id === allocationId)
-            if (allocation) {
-                const soldQuantity = processing.soldQuantity || 0
-                return total + soldQuantity * allocation.itemPrice
-            }
-            return total
+        return Object.values(processingAllocations).reduce((total, processing) => {
+            return total + (processing.expectedPayment || 0)
         }, 0)
     }
 
@@ -245,12 +245,14 @@ export default function EndOfDay() {
 
             const currentProcessing = processingAllocations[editingAllocation.id]
             if (currentProcessing && currentProcessing.soldQuantity > updatedQuantity) {
+                const newExpectedPayment = updatedQuantity * editingAllocation.itemPrice
                 setProcessingAllocations((prev) => ({
                     ...prev,
                     [editingAllocation.id]: {
                         ...currentProcessing,
                         soldQuantity: updatedQuantity,
                         paymentReceived: updatedQuantity * editingAllocation.itemPrice,
+                        expectedPayment: newExpectedPayment,
                     },
                 }))
             }
@@ -336,7 +338,6 @@ export default function EndOfDay() {
                                                     {salesperson.itemsAllocated} items
                                                 </Badge>
                                             </div>
-
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -363,8 +364,9 @@ export default function EndOfDay() {
                                         const processing = processingAllocations[allocation.id] || {
                                             soldQuantity: 0,
                                             paymentReceived: 0,
+                                            expectedPayment: 0,
                                         }
-                                        const expectedPayment = (processing.soldQuantity ?? 0) * allocation.itemPrice
+                                        const expectedPayment = processing.expectedPayment || 0
                                         const returnedQuantity = allocation.quantity - (processing.soldQuantity ?? 0)
 
                                         return (
@@ -584,8 +586,9 @@ export default function EndOfDay() {
                                                 const processing = processingAllocations[allocation.id] || {
                                                     soldQuantity: 0,
                                                     paymentReceived: 0,
+                                                    expectedPayment: 0,
                                                 }
-                                                const expectedPayment = (processing.soldQuantity ?? 0) * allocation.itemPrice
+                                                const expectedPayment = processing.expectedPayment || 0
                                                 const returnedQuantity = allocation.quantity - (processing.soldQuantity ?? 0)
 
                                                 return (

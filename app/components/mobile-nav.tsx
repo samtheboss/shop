@@ -15,6 +15,7 @@ const navigation = [
   { name: "Allocate Items", href: "/allocate", icon: ArrowRightLeft },
   { name: "End of Day", href: "/end-of-day", icon: DollarSign },
   { name: "Reports", href: "/reports", icon: BarChart3 },
+  { name: "Reports 2", href: "/reportsadvance", icon: BarChart3 },
 ]
 
 export default function MobileNav() {
